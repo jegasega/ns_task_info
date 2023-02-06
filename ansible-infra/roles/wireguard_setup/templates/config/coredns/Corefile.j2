@@ -1,0 +1,11 @@
+. {
+  forward . 8.8.8.8 1.1.1.1
+  cache
+  errors
+}
+
+netflix.com:53 {
+    file ./db.netflix
+    log
+    errors
+}

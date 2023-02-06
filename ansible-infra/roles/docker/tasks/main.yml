@@ -1,0 +1,6 @@
+---
+# file: roles/install/docker/tasks/main.yml
+
+- import_tasks: install.yml
+  tags:
+  - docker_install

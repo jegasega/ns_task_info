@@ -1,0 +1,10 @@
+---
+- name: Tear down existing services
+  community.docker.docker_compose:
+    project_src: wireguard_setup
+    state: absent
+
+- name: Create and start services
+  community.docker.docker_compose:
+    project_src: wireguard_setup
+  register: output

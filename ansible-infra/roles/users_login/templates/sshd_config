@@ -1,0 +1,18 @@
+### sshd config managed by DevOps team Ansible ###
+PermitRootLogin yes
+GSSAPIAuthentication no
+Subsystem       sftp    /usr/lib/openssh/sftp-server
+X11Forwarding no
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+UsePAM yes
+GSSAPICleanupCredentials yes
+ChallengeResponseAuthentication no
+PasswordAuthentication yes
+UseDNS no
+SyslogFacility AUTHPRIV
+Protocol 2
+PubkeyAuthentication yes
+AuthorizedKeysFile     .ssh/authorized_keys

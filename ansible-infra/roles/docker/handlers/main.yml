@@ -1,0 +1,14 @@
+---
+
+- name: containerd_restart
+  service: 
+    name: containerd
+    state: restarted
+  when: kubernetes_service_restart == "yes"
+
+- name: kubelet_restart
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+  when: kubernetes_service_restart == "yes"

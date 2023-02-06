@@ -1,0 +1,18 @@
+$TTL    604800
+@       IN      SOA     ns1.netflix.com. admin.netflix.com. (
+                         20230203       ; Serial
+                         600            ; Refresh
+                         300            ; Retry
+                        19200           ; Expire
+                         600 )  ; Negative Cache TTL
+;
+; name servers - NS records
+     IN      NS      ns1.netflix.com.
+     IN      NS      ns2.netflix.com.
+
+; name servers - A records
+ns1.netflix.com.          IN      A       10.13.13.1
+ns2.netflix.com.          IN      A       10.13.13.1
+
+*.netflix.com.        IN      A               192.168.50.10
+netflix.com.        IN      A      192.168.50.10

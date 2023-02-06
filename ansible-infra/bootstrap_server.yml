@@ -1,0 +1,10 @@
+---
+- name: Bootstrap server
+  hosts: all
+  serial: 1
+  roles:
+    - { role: os, become: yes}
+    - { role: users_login, become: yes }
+    - { role: docker, become: yes }
+    - { role: wireguard_setup, become: no }
+...

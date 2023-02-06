@@ -1,0 +1,46 @@
+---
+
+- name: set up operator accounts
+  user:
+      comment: "{{ item.comment | default('')}}"
+      name: "{{ item.username }}"
+      shell: "{{ ansible_env.SHELL }}"
+      state: "{{ item.state }}"
+  with_items:
+      - "{{ operator_accounts }}"
+
+- name: install pubkeys
+  authorized_key:
+      comment: "deployed by Ansible"
+      exclusive: yes
+      key: "{{ item.pubkey }}"
+      state: "{{ item.state }}"
+      user: "{{ item.username }}"
+  with_items:
+      - "{{ operator_accounts }}"
+
+- name: add to sudoers.d
+  copy:
+      content: "{{ item.username }} ALL=(ALL) NOPASSWD:ALL"
+      dest: /etc/sudoers.d/{{ item.username }}
+      mode: 0440
+      owner: root
+      group: root
+  with_items:
+      - "{{ operator_accounts }}"
+  when: item.sudo | default(true)
+
+- name: Update sshd_config
+  template:
+    src: "{{ item }}"
+    dest: /etc/ssh/{{ item }}
+    mode: 0600
+    owner: root
+    group: root
+  with_items:
+    - "sshd_config"
+  tags: sshd
+  notify:
+    - Restart sshd
+
+...

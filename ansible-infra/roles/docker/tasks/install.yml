@@ -1,0 +1,71 @@
+---
+
+# file: roles/install/kubernetes/tasks/install.yml
+
+- name: Install packages needed for repo setup
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: true
+  vars:
+    packages:
+    - "apt-transport-https"
+    - "ca-certificates" 
+    - "curl" 
+    - "gnupg2" 
+    - "software-properties-common"
+
+- name: Install Docker repo GPG key
+  block:
+    - name: download Docker apt key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: configure Docker apt repo
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 ] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        state: present
+
+- name: Install Docker related packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - "containerd.io"
+    - "docker-ce"
+    - "docker-ce-cli"
+
+- name: Hold containerd.io package
+  ansible.builtin.dpkg_selections:
+    name: containerd.io
+    selection: hold
+
+- name: Hold docker-ce package
+  ansible.builtin.dpkg_selections:
+    name: docker-ce
+    selection: hold
+ 
+- name: Hold docker-ce-cli package
+  ansible.builtin.dpkg_selections:
+    name: docker-ce-cli
+    selection: hold
+
+- name: Enabling and starting Docker service
+  systemd:
+    name: "docker"
+    enabled: "yes"
+    state: "started"
+
+- name: Installing PIP package
+  apt:
+    update_cache: yes
+    state: latest
+    name: python3-pip
+
+- name: Install Docker Python module
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - docker
+    - docker-compose

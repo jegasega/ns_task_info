@@ -1,0 +1,35 @@
+---
+
+- name: Create necessary folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - "~/wireguard_setup/config"
+    - "~/wireguard_setup/sniproxy"
+    - "~/wireguard_setup/config/coredns"
+
+- name: Add Coredns configuration
+  template:
+    src:  config/coredns/{{ item }}.j2
+    dest: ~/wireguard_setup/config/coredns/{{ item }}
+    mode: 0644
+  with_items:
+    - "Corefile"
+    - "db.netflix"
+
+- name: Add SNI proxy configuration
+  template:
+    src:  sniproxy/sniproxy.conf.j2
+    dest: ~/wireguard_setup/sniproxy/sniproxy.conf
+    mode: 0644
+
+- name: Add docker-compose.yml file
+  template:
+    src:  docker-compose.yml.j2
+    dest: ~/wireguard_setup//docker-compose.yml
+    mode: 0644
+
+...
+

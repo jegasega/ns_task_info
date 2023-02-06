@@ -1,0 +1,40 @@
+---
+version: "2.1"
+services:
+  wireguard:
+    image: ghcr.io/linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - PEERS=1
+      - ALLOWEDIPS=192.168.50.0/24, 10.13.13.0/24
+      - SERVERURL=194.233.164.167
+      - SERVERPORT=8000
+      - PEERDNS=auto
+    volumes:
+      - ./config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 8000:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      - vpn_network
+  sniproxy:
+    image: tommylau/sniproxy
+    container_name: sniproxy
+    volumes:
+      - ./sniproxy:/etc/sniproxy
+    networks:
+      vpn_network:
+        ipv4_address: 192.168.50.10
+networks:
+  vpn_network:
+    name: vpn_network
+    external: true
